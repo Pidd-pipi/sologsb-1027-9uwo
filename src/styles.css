@@ -49,7 +49,7 @@ button, input, textarea, select { font: inherit; }
 .editor-layout, .review-layout, .compare-layout { padding: 16px 22px 34px; display: grid; gap: 14px; align-items: start; }
 .editor-layout { grid-template-columns: 286px minmax(560px, 1fr) 320px; }
 .review-layout { grid-template-columns: 286px minmax(560px, 1fr) 300px; }
-.compare-layout { grid-template-columns: 310px minmax(520px, 1fr) 280px; }
+.compare-layout { grid-template-columns: 380px minmax(520px, 1fr) 280px; }
 .step-panel, .review-steps { overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: #fff; box-shadow: 0 4px 14px rgba(31,45,61,.05); }
 .panel-heading, .card-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .panel-heading { padding: 17px 16px 12px; border-bottom: 1px solid #e6eaf0; }
@@ -122,16 +122,49 @@ button, input, textarea, select { font: inherit; }
 .review-actions .bp6-button { margin-bottom: 8px; }
 .review-progress-list { max-height: 210px; overflow-y: auto; margin-bottom: 12px; }
 .review-progress-list > div { padding: 7px 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid #e7ebf0; font-size: 10px; }
-.version-timeline { display: grid; }
-.version-timeline article { min-height: 104px; display: grid; grid-template-columns: 24px 1fr; gap: 8px; position: relative; }
-.version-timeline article::before { content: ''; position: absolute; left: 7px; top: 18px; bottom: 0; width: 1px; background: #ccd5df; }
-.version-timeline article:last-child::before { display: none; }
-.version-timeline article > span { width: 15px; height: 15px; margin-top: 4px; border: 3px solid #8493a3; border-radius: 50%; background: #fff; z-index: 1; }
-.version-timeline article.latest > span { border-color: var(--blue); box-shadow: 0 0 0 4px #e6effb; }
-.version-timeline b { color: var(--blue); font: 600 10px "IBM Plex Mono", monospace; }
-.version-timeline strong { display: block; margin-top: 3px; font-size: 11px; }
-.version-timeline p { margin: 4px 0; color: #7b8797; font-size: 9px; }
-.version-timeline small { color: #657181; font-size: 9px; line-height: 1.5; }
+/* 版本树：按父子关系缩进，冻结节点 + 挂在其下的未冻结修订稿 */
+.tree-hint { margin: 0 0 12px; padding: 9px 11px; border: 1px solid #e3e9f0; border-radius: 7px; background: #f7f9fb; font-size: 10px; }
+.version-tree { display: grid; gap: 4px; max-height: 640px; overflow-y: auto; padding-right: 2px; }
+.tree-children { margin-left: 11px; padding-left: 16px; display: grid; gap: 4px; border-left: 1px dashed #c4cedb; }
+.tree-node-row, .tree-draft { display: grid; grid-template-columns: 24px 1fr; gap: 8px; padding: 9px 8px; border: 1px solid #e4e9ef; border-radius: 8px; background: #fff; }
+.tree-node-row.in-compare { border-color: #9cc0ee; background: #f2f7fe; box-shadow: inset 3px 0 var(--blue); }
+.tree-dot { width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: #55708b; margin-top: 2px; }
+.tree-copy { min-width: 0; }
+.tree-copy-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.tree-copy-head b { color: var(--blue); font: 600 10px "IBM Plex Mono", monospace; }
+.tree-copy-head strong { font-size: 11px; }
+.tree-copy-head .bp6-tag { font-size: 9px; min-height: 16px; height: 16px; padding: 0 6px; }
+.tree-copy > p { margin: 4px 0 3px; color: #7b8797; font-size: 9px; }
+.tree-summary { display: block; color: #5a6675; font-size: 9.5px; line-height: 1.55; }
+.tree-actions { grid-column: 1 / 3; display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin-top: 4px; padding-top: 7px; border-top: 1px dashed #e7ebf0; }
+.tree-actions .bp6-button, .draft-actions .bp6-button { font-size: 10px; }
+.tree-draft { grid-template-columns: 14px 1fr; border-style: dashed; border-color: #d3a25a; background: #fffbf3; align-items: start; }
+.tree-draft.active { border-color: #2d72d2; border-style: solid; background: #f3f8ff; box-shadow: inset 3px 0 var(--blue); }
+.tree-draft.orphan { margin-top: 6px; }
+.draft-dot { width: 10px; height: 10px; margin: 4px 0 0 4px; border-radius: 50%; border: 3px solid var(--amber); background: #fff; }
+.tree-draft.active .draft-dot { border-color: var(--blue); }
+.draft-copy { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.draft-copy small { color: #8a7a5c; font-size: 9px; line-height: 1.5; }
+.tree-draft.active .draft-copy small { color: #6c7f96; }
+.draft-actions { grid-column: 1 / 3; display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin-top: 5px; padding-top: 6px; border-top: 1px dashed #ecdfc5; }
+.tree-draft.active .draft-actions { border-top-color: #d8e5f5; }
+.empty-workspace { padding: 40px 22px; display: grid; place-items: center; }
+.empty-workspace .bp6-card { max-width: 560px; padding: 38px 34px; text-align: center; display: grid; justify-items: center; gap: 10px; }
+.empty-workspace h2 { margin: 6px 0 0; font-size: 18px; }
+.empty-workspace p { margin: 0 0 8px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+.freeze-dialog { width: 560px; max-width: 92vw; }
+.view-dialog { width: 640px; max-width: 92vw; }
+.freeze-meta { display: grid; gap: 8px; margin-bottom: 13px; }
+.freeze-meta div { display: flex; justify-content: space-between; gap: 16px; padding: 8px 11px; border: 1px solid #e4e9ef; border-radius: 7px; background: #f8fafb; font-size: 11px; }
+.freeze-meta span { color: #7a8697; font-size: 10px; }
+.freeze-callout { margin-bottom: 13px; font-size: 11px; }
+.view-step-list { display: grid; gap: 8px; margin-top: 12px; max-height: 52vh; overflow-y: auto; }
+.view-step-list article { padding: 10px 12px; border: 1px solid #e4e9ef; border-radius: 8px; background: #f9fafb; }
+.view-step-list header { display: flex; align-items: center; gap: 9px; margin-bottom: 5px; }
+.view-step-list header span { color: var(--blue); font: 600 10px "IBM Plex Mono", monospace; }
+.view-step-list header strong { font-size: 12px; }
+.view-step-list p { margin: 0 0 4px; font-size: 11px; line-height: 1.65; }
+.view-step-list small { color: #7c8796; font-size: 9.5px; line-height: 1.5; }
 .diff-selects { display: flex; align-items: center; gap: 7px; }
 .diff-selects .bp6-html-select { min-width: 150px; }
 .diff-table { margin-top: 4px; overflow: hidden; border: 1px solid #dce2e9; border-radius: 8px; }
